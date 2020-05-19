@@ -1,12 +1,16 @@
 package com.winter.datastructure.structure;
 
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 
+import java.util.AbstractQueue;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * 参考jdk原生的 PriorityBlockingQueue 优先级队列实现 (小顶堆 - 最上层的元素为队列中最小的元素)<br>
@@ -22,6 +26,7 @@ public class MyPriorityQueue<T extends Comparable> {
     /**
      * 内部数组，用来实现堆结构
      */
+    @Getter
     private Object[] queue;
 
     /**
@@ -44,9 +49,10 @@ public class MyPriorityQueue<T extends Comparable> {
      *
      * @param obj
      */
-    public void offer(T obj) {
+    public boolean offer(T obj) {
         siftUpComparable(size, obj, queue);
         size++;
+        return true;
     }
 
     /**
@@ -131,7 +137,7 @@ public class MyPriorityQueue<T extends Comparable> {
      */
     public void tryCompareAndPoll(T x) {
         if (size < queue.length) {
-            offer(x);
+            this.offer(x);
         } else if (x.compareTo(queue[0]) > 0) {
             siftDownComparable(0, x, queue, size);
         }
@@ -154,5 +160,11 @@ public class MyPriorityQueue<T extends Comparable> {
         log.info("排序后的堆数组:{}", Arrays.toString(myPriorityQueue.queue));
         Collections.sort(numbers);
         log.info("全局排序后最大{}个数:{}", k, numbers.subList(n - k, n));
+
+        PriorityBlockingQueue<Integer> priorityBlockingQueue = new PriorityBlockingQueue<>();
+        priorityBlockingQueue.add(10);
+        priorityBlockingQueue.add(8);
+        priorityBlockingQueue.removeIf(nex -> nex == 8);
     }
+
 }
