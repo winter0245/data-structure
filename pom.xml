@@ -74,6 +74,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.codehaus.janino/janino -->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+
+
 
     </dependencies>
 

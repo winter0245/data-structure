@@ -1,6 +1,7 @@
 package com.winter.datastructure.structure;
 
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import java.util.List;
  * @date 2020年05月19日 14:33:53 <br>
  * @see java.util.concurrent.PriorityBlockingQueue
  */
+@Slf4j
 public class MyPriorityQueue<T extends Comparable> {
     /**
      * 内部数组，用来实现堆结构
@@ -147,13 +149,10 @@ public class MyPriorityQueue<T extends Comparable> {
             myPriorityQueue.tryCompareAndPoll(num);
             numbers.add(num);
         }
-        System.out.println("--------当前堆数组");
-        System.out.println(Arrays.toString(myPriorityQueue.queue));
+        log.info("当前堆数组:{}", Arrays.toString(myPriorityQueue.queue));
         Arrays.sort(myPriorityQueue.queue);
-        System.out.println("--------排序后堆数组");
-        System.out.println(Arrays.toString(myPriorityQueue.queue));
+        log.info("排序后的堆数组:{}", Arrays.toString(myPriorityQueue.queue));
         Collections.sort(numbers);
-        System.out.println("--------全局排序后的最大k个数");
-        System.out.println(numbers.subList(n - k, n));
+        log.info("全局排序后最大{}个数:{}", k, numbers.subList(n - k, n));
     }
 }
