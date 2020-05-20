@@ -10,10 +10,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * <br>
+ * 基于数组实现一种有序队列<br>
  *
  * @author zhangdongdong<br>
  * @version 1.0<br>
@@ -80,24 +79,42 @@ public class MySortPriorityQueue<T extends Comparable> extends AbstractQueue<T> 
         if (size < queue.length) {
             offer(x);
         } else if (x.compareTo(queue[0]) > 0) {
-            int i = 0;
-            for (; i < size; i++) {
-                if (x.compareTo(queue[i]) <= 0) {
-                    break;
-                }
-            }
-            if (i == 1) {
+            int i = binarySearchInsertIndex(x);
+            if (i == 0) {
                 queue[0] = x;
-            } else if (i == size) {
+            } else if (i == size - 1) {
                 System.arraycopy(queue, 1, queue, 0, size - 1);
-                queue[i - 1] = x;
+                queue[i] = x;
             } else {
-                System.arraycopy(queue, 1, queue, 0, i - 1);
-                System.arraycopy(queue, i, queue, i, size - i);
-                queue[i - 1] = x;
+                System.arraycopy(queue, 1, queue, 0, i);
+                System.arraycopy(queue, i + 1, queue, i + 1, size - i - 1);
+                queue[i] = x;
             }
 
         }
+    }
+
+    public int binarySearchInsertIndex(T x) {
+        if (size == 0) {
+            return 0;
+        }
+        if (x.compareTo(queue[size - 1]) >= 0) {
+            return size - 1;
+        }
+        int l = 0;
+        int h = size - 1;
+        while (l <= h) {
+            int mid = (l + h) >> 1;
+            int cmp = x.compareTo(queue[mid]);
+            if (cmp > 0) {
+                l = mid + 1;
+            } else if (cmp < 0) {
+                h = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return h;
     }
 
     @Override public Iterator<T> iterator() {
@@ -176,12 +193,14 @@ public class MySortPriorityQueue<T extends Comparable> extends AbstractQueue<T> 
     }
 
     public static void main(String[] args) {
+
         List<Integer> numbers = new LinkedList<>();
-        for (int i = 0; i < 1000000; i++) {
-            numbers.add(RandomUtils.nextInt(1, 1000000));
+        for (int i = 0; i < 10000000; i++) {
+            numbers.add(RandomUtils.nextInt(1, 10000000));
         }
+        long sortStart = System.currentTimeMillis();
         Collections.sort(numbers);
-        System.out.println(numbers.subList(1000000 - 10, 1000000));
+        log.info("sort take time :{}ms , queue :{}", System.currentTimeMillis() - sortStart, numbers.subList(1000000 - 10, 1000000));
         for (int batch = 0; batch < 10; batch++) {
             long start = System.currentTimeMillis();
             MySortPriorityQueue<Integer> mySortPriorityQueue = new MySortPriorityQueue<>(10);
@@ -197,7 +216,8 @@ public class MySortPriorityQueue<T extends Comparable> extends AbstractQueue<T> 
             for (Integer num : numbers) {
                 mySortPriorityQueue.tryCompareAndPoll(num);
             }
-            log.info("priority queue take time :{}ms , queue [{}]", (System.currentTimeMillis() - start), Arrays.toString(mySortPriorityQueue.getQueue()));
+            log.info("priority queue take time :{}ms , queue [{}]", (System.currentTimeMillis() - start),
+                    Arrays.toString(mySortPriorityQueue.getQueue()));
         }
     }
 
